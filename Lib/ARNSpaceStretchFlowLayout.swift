@@ -38,7 +38,7 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
     public override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
         var newRect = UIEdgeInsetsInsetRect(rect, self.bufferedContentInsets)
         
-        var items = super.layoutAttributesForElementsInRect(newRect) as [UICollectionViewLayoutAttributes]?
+        var items = super.layoutAttributesForElementsInRect(newRect) as! [UICollectionViewLayoutAttributes]?
         
         if let _items = items {
             
