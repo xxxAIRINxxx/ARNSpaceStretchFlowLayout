@@ -16,29 +16,28 @@ It was inspired by the following products.(Respect!)
 
 - [Stretchy-Collection-View](https://github.com/cnoon/Stretchy-Collection-View) (objc)
 
+
 ## Usage
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
+
 ## Requirements
 
-- iOS 8.0+ & ARC
+* Xcode 6.4
+* iOS 8.0+
+* Swift 1.2
+* CcoaPods 0.36.0+ (if use CcoaPods)
 
-- CcoaPods 0.36.0+ (if use CcoaPods)
 
-## Installation
-
-### CocoaPods
+## CocoaPods
 
 ARNSpaceStretchFlowLayout is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
     pod "ARNSpaceStretchFlowLayout"
 
-### Carthage
-
-please wait..
 
 ## License
 
-ARNSpaceStretchFlowLayout is available under the MIT license. See the LICENSE file for more info.
+MIT license. See the LICENSE file for more info.
