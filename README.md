@@ -24,9 +24,9 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
-* Xcode 6.4
+* Xcode 7.0
 * iOS 8.0+
-* Swift 1.2
+* Swift 2.0
 * CcoaPods 0.36.0+ (if use CcoaPods)
 
 

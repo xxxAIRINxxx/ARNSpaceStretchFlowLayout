@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "ARNSpaceStretchFlowLayout"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "Evernote like UICollectionViewFlowLayout. (Swift lang)"
   s.homepage         = "https://github.com/xxxAIRINxxx/ARNSpaceStretchFlowLayout"
   # s.screenshots    = "www.example.com/screenshots_1", "www.example.com/screenshots_2"

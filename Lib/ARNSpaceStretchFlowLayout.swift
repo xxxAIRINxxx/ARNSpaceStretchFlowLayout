@@ -3,7 +3,7 @@
 //  ARNSpaceStretchFlowLayout
 //
 //  Created by xxxAIRINxxx on 2015/02/08.
-//  Copyright (c) 2015 Airin. All rights reserved.
+//  Copyright (c) 2015 xxxAIRINxxx. All rights reserved.
 //
 
 import UIKit
@@ -24,10 +24,6 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
         }
     }
     
-    var contentOverflowPadding : UIEdgeInsets = UIEdgeInsetsZero
-    var bufferedContentInsets : UIEdgeInsets = UIEdgeInsetsZero
-    var transformsNeedReset : Bool = false
-    
     public override func collectionViewContentSize() -> CGSize {
         var contentSize = super.collectionViewContentSize()
         contentSize.height += self.contentOverflowPadding.top + self.contentOverflowPadding.bottom
@@ -35,17 +31,21 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
         return contentSize
     }
     
-    public override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
-        var newRect = UIEdgeInsetsInsetRect(rect, self.bufferedContentInsets)
+    private var contentOverflowPadding : UIEdgeInsets = UIEdgeInsetsZero
+    private var bufferedContentInsets : UIEdgeInsets = UIEdgeInsetsZero
+    private var transformsNeedReset : Bool = false
+    
+    public override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        let newRect = UIEdgeInsetsInsetRect(rect, self.bufferedContentInsets)
         
-        var items = super.layoutAttributesForElementsInRect(newRect) as! [UICollectionViewLayoutAttributes]?
+        let attributes = super.layoutAttributesForElementsInRect(newRect)
         
-        if let _items = items {
+        if let _attributes = attributes {
             
-            for item in _items {
-                var center = item.center
+            _ = _attributes.map(){ [unowned self] in
+                var center = $0.center
                 center.y += self.contentOverflowPadding.top
-                item.center = center
+                $0.center = center
             }
             
             let collectionViewHeight = super.collectionViewContentSize().height
@@ -56,10 +56,10 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
             if yPosition < topOffset {
                 let stretchDelta = topOffset - yPosition
                 
-                for item in _items {
-                    let distanceFromTop = item.center.y - self.contentOverflowPadding.top
+                _ = _attributes.map(){ [unowned self] in
+                    let distanceFromTop = $0.center.y - self.contentOverflowPadding.top
                     let scrollResistance = distanceFromTop / self.scrollResistanceDenominator
-                    item.transform = CGAffineTransformMakeTranslation(0, -stretchDelta + (stretchDelta * scrollResistance))
+                    $0.transform = CGAffineTransformMakeTranslation(0, -stretchDelta + (stretchDelta * scrollResistance))
                 }
                 
                 self.transformsNeedReset = true
@@ -67,10 +67,10 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
             } else if yPosition > bottomOffset {
                 let stretchDelta = yPosition - bottomOffset
                 
-                for item in _items {
-                    let distanceFromBottom = collectionViewHeight + self.contentOverflowPadding.top - item.center.y
+                _ = _attributes.map(){ [unowned self] in
+                    let distanceFromBottom = collectionViewHeight + self.contentOverflowPadding.top - $0.center.y
                     let scrollResistance = distanceFromBottom / self.scrollResistanceDenominator
-                    item.transform = CGAffineTransformMakeTranslation(0, stretchDelta + (-stretchDelta * scrollResistance))
+                    $0.transform = CGAffineTransformMakeTranslation(0, stretchDelta + (-stretchDelta * scrollResistance))
                 }
                 
                 self.transformsNeedReset = true
@@ -78,13 +78,13 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
             } else if self.transformsNeedReset == true {
                 self.transformsNeedReset = false
                 
-                for item in _items {
-                    item.transform = CGAffineTransformIdentity
+                _ = _attributes.map(){
+                    $0.transform = CGAffineTransformIdentity
                 }
             }
         }
         
-        return items
+        return attributes
     }
     
     public override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
