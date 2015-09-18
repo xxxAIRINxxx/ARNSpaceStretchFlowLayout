@@ -41,8 +41,7 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
         let attributes = super.layoutAttributesForElementsInRect(newRect)
         
         if let _attributes = attributes {
-            
-            _ = _attributes.map(){ [unowned self] in
+            _attributes.forEach(){ [unowned self] in
                 var center = $0.center
                 center.y += self.contentOverflowPadding.top
                 $0.center = center
@@ -56,29 +55,27 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
             if yPosition < topOffset {
                 let stretchDelta = topOffset - yPosition
                 
-                _ = _attributes.map(){ [unowned self] in
+                _attributes.forEach(){ [unowned self] in
                     let distanceFromTop = $0.center.y - self.contentOverflowPadding.top
                     let scrollResistance = distanceFromTop / self.scrollResistanceDenominator
                     $0.transform = CGAffineTransformMakeTranslation(0, -stretchDelta + (stretchDelta * scrollResistance))
                 }
                 
                 self.transformsNeedReset = true
-                
             } else if yPosition > bottomOffset {
                 let stretchDelta = yPosition - bottomOffset
                 
-                _ = _attributes.map(){ [unowned self] in
+                _attributes.forEach(){ [unowned self] in
                     let distanceFromBottom = collectionViewHeight + self.contentOverflowPadding.top - $0.center.y
                     let scrollResistance = distanceFromBottom / self.scrollResistanceDenominator
                     $0.transform = CGAffineTransformMakeTranslation(0, stretchDelta + (-stretchDelta * scrollResistance))
                 }
                 
                 self.transformsNeedReset = true
-                
             } else if self.transformsNeedReset == true {
                 self.transformsNeedReset = false
                 
-                _ = _attributes.map(){
+                _attributes.forEach(){
                     $0.transform = CGAffineTransformIdentity
                 }
             }
