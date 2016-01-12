@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    @IBOutlet weak var collectionView : UICollectionView?
+    @IBOutlet weak var collectionView : UICollectionView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,8 +23,12 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
         flowLayout.minimumLineSpacing = 5
         flowLayout.minimumInteritemSpacing = 5
         flowLayout.scrollResistanceDenominator = 1000.0
-        self.collectionView?.collectionViewLayout = flowLayout
+        self.collectionView.collectionViewLayout = flowLayout
     }
+    
+}
+
+extension ViewController {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 15

@@ -37,47 +37,47 @@ public class ARNSpaceStretchFlowLayout : UICollectionViewFlowLayout {
     
     public override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let newRect = UIEdgeInsetsInsetRect(rect, self.bufferedContentInsets)
+        let att = super.layoutAttributesForElementsInRect(newRect)
         
-        let attributes = super.layoutAttributesForElementsInRect(newRect)
+        var attributes:[UICollectionViewLayoutAttributes] = []
+        att?.forEach() { attributes.append($0.copy() as! UICollectionViewLayoutAttributes) }
         
-        if let _attributes = attributes {
-            _attributes.forEach(){ [unowned self] in
-                var center = $0.center
-                center.y += self.contentOverflowPadding.top
-                $0.center = center
+        attributes.forEach(){ [unowned self] in
+            var center = $0.center
+            center.y += self.contentOverflowPadding.top
+            $0.center = center
+        }
+        
+        let collectionViewHeight = super.collectionViewContentSize().height
+        let topOffset = self.contentOverflowPadding.top
+        let bottomOffset = collectionViewHeight - self.collectionView!.frame.size.height + self.contentOverflowPadding.top
+        let yPosition = self.collectionView!.contentOffset.y
+        
+        if yPosition < topOffset {
+            let stretchDelta = topOffset - yPosition
+            
+            attributes.forEach(){ [unowned self] in
+                let distanceFromTop = $0.center.y - self.contentOverflowPadding.top
+                let scrollResistance = distanceFromTop / self.scrollResistanceDenominator
+                $0.transform = CGAffineTransformMakeTranslation(0, -stretchDelta + (stretchDelta * scrollResistance))
             }
             
-            let collectionViewHeight = super.collectionViewContentSize().height
-            let topOffset = self.contentOverflowPadding.top
-            let bottomOffset = collectionViewHeight - self.collectionView!.frame.size.height + self.contentOverflowPadding.top
-            let yPosition = self.collectionView!.contentOffset.y
+            self.transformsNeedReset = true
+        } else if yPosition > bottomOffset {
+            let stretchDelta = yPosition - bottomOffset
             
-            if yPosition < topOffset {
-                let stretchDelta = topOffset - yPosition
-                
-                _attributes.forEach(){ [unowned self] in
-                    let distanceFromTop = $0.center.y - self.contentOverflowPadding.top
-                    let scrollResistance = distanceFromTop / self.scrollResistanceDenominator
-                    $0.transform = CGAffineTransformMakeTranslation(0, -stretchDelta + (stretchDelta * scrollResistance))
-                }
-                
-                self.transformsNeedReset = true
-            } else if yPosition > bottomOffset {
-                let stretchDelta = yPosition - bottomOffset
-                
-                _attributes.forEach(){ [unowned self] in
-                    let distanceFromBottom = collectionViewHeight + self.contentOverflowPadding.top - $0.center.y
-                    let scrollResistance = distanceFromBottom / self.scrollResistanceDenominator
-                    $0.transform = CGAffineTransformMakeTranslation(0, stretchDelta + (-stretchDelta * scrollResistance))
-                }
-                
-                self.transformsNeedReset = true
-            } else if self.transformsNeedReset == true {
-                self.transformsNeedReset = false
-                
-                _attributes.forEach(){
-                    $0.transform = CGAffineTransformIdentity
-                }
+            attributes.forEach(){ [unowned self] in
+                let distanceFromBottom = collectionViewHeight + self.contentOverflowPadding.top - $0.center.y
+                let scrollResistance = distanceFromBottom / self.scrollResistanceDenominator
+                $0.transform = CGAffineTransformMakeTranslation(0, stretchDelta + (-stretchDelta * scrollResistance))
+            }
+            
+            self.transformsNeedReset = true
+        } else if self.transformsNeedReset == true {
+            self.transformsNeedReset = false
+            
+            attributes.forEach(){
+                $0.transform = CGAffineTransformIdentity
             }
         }
         
